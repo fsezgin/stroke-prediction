@@ -25,14 +25,6 @@ for col in cat.columns:
     print()
     print()
 
-# check the "unknown" and "others" misleading variables in gender and smoking_status
-# drop 'other' and 'unknown' values on columns to avoid wrong predict
-stroke_prediction_train_data = stroke_prediction_train_data.drop(stroke_prediction_train_data[stroke_prediction_train_data['gender'] == 'Other'].index)
-stroke_prediction_test_data = stroke_prediction_test_data.drop(stroke_prediction_test_data[stroke_prediction_test_data['gender'] == 'Other'].index)
-stroke_prediction_train_data = stroke_prediction_train_data.drop(stroke_prediction_train_data[stroke_prediction_train_data['smoking_status'] == 'Unknown'].index)
-stroke_prediction_test_data = stroke_prediction_test_data.drop(stroke_prediction_test_data[stroke_prediction_test_data['smoking_status'] == 'Unknown'].index)
-#print(stroke_prediction_train_data.head())
-
 # copy and add a new column to make the dataset more detailed in the data visualization part
 graph_data = stroke_prediction_train_data.copy()
 graph_data['age_group'] = pd.cut(graph_data['age'], bins=[0, 9, 19, 29, 39, 49, 59, 69, 79, 89],
@@ -55,6 +47,7 @@ lr = LogisticRegression(max_iter=1000) # change iter count other push
 lr.fit(X_train, y_train)
 pred = lr.predict(X_val)
 
+
 param_grid = {
     'penalty' : ['l1','l2','elasticnet','None'],
     'C': np.logspace(-4,4,20),
@@ -70,10 +63,17 @@ GS = GridSearchCV(
 )
 
 GS.fit(X_train, y_train)
+GS.best_params_
+GS.best_score_
 
 tunedpredictions = GS.predict(X_val)
 accuracy = accuracy_score(y_val, tunedpredictions)
 print(accuracy)
+
+submission_prediction = GS.predict(stroke_prediction_test_data)
+idss= stroke_prediction_test_data["id"]
+ddf = pd.DataFrame({"id": idss.values, "stroke": submission_prediction})
+ddf.to_csv("submission.csv", index = False)
 
 visualizer = StrokeDataVisualizer(graph_data)
 
