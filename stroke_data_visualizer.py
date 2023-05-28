@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-# I created the graph class to show relation between features and 'stroke'
+# I thought the binary column chart would be the most accurate chart for examining the effects of features on 'stroke' and included it in this class.
+# created this class to observe and examine the relationships between properties and 'stroke', start with count_
+# created this class to examine the densities within the dataset of my features, start with dis_
 class StrokeDataVisualizer:
     def __init__(self, data):
         self.data = data
@@ -68,7 +69,6 @@ class StrokeDataVisualizer:
         sns.countplot(x=self.data['smoking_status'], hue=self.data['stroke'], data=self.data, palette='twilight')
         plt.show()
 
-#*************************
     def dis_age_graph(self):
         sns.set_theme(style='whitegrid')
         plt.figure(figsize=(6, 5))
